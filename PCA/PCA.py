@@ -3,7 +3,6 @@
 '''
 
 from numpy import *
-import matplotlib
 import matplotlib.pyplot as plt
 
 def loadDataSet(filename, delim='\t'):
@@ -35,7 +34,7 @@ def PCA(dataMat, topNfeat=9999999):
     redEigVects = eigVects[:,eigValIdx]
     lowDDataMat = meanRemoved * redEigVects
     reconMat = (lowDDataMat * redEigVects.T) + meanVals
-    return lowDDataMat, reconMat
+    return lowDDataMat, reconMat #reconMat for test
 
 
 
@@ -47,3 +46,4 @@ if __name__ == '__main__':
     ax.set_title('PCA')
     ax.scatter(dataMat[:,0].tolist(), dataMat[:,1].tolist(), marker='.', s=90)
     ax.scatter(reconMat[:,0].tolist(), reconMat[:,1].tolist(), marker='o', s=50, c='red')
+    plt.show()
