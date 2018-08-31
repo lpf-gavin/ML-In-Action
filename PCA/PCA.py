@@ -27,7 +27,7 @@ def PCA(dataMat, topNfeat=9999999):
     Otherwise, relationships are transposed: each column represents variables, and rows contain observations.
     '''
 
-    covMat = cov(meanRemoved, rowvar=0)
+    covMat = cov(meanRemoved, rowvar=False)
     eigVals, eigVects = linalg.eig(mat(covMat))
     eigValIdx = argsort(eigVals)
     eigValIdx = eigValIdx[:-(topNfeat + 1):-1]
@@ -40,7 +40,7 @@ def PCA(dataMat, topNfeat=9999999):
 
 if __name__ == '__main__':
     dataMat = loadDataSet('testSet.txt')
-    lowDMat, reconMat = PCA(dataMat, 1)
+    lowDMat, reconMat = PCA(dataMat, True)
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_title('PCA')
