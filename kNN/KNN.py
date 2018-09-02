@@ -1,3 +1,9 @@
+'''
+
+Machine Learning In Action Chapter2
+Using kNN to solve handwriting classify problem. 
+'''
+
 from numpy import *
 # assume n is dimension of data, the shape of inX is 1 * n, m * n for dataSet, m for labels
 def kNNclassify(inX, dataSet, labels, k):
