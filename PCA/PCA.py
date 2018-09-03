@@ -40,7 +40,7 @@ def PCA(dataMat, topNfeat=9999999):
 
 if __name__ == '__main__':
     dataMat = loadDataSet('testSet.txt')
-    lowDMat, reconMat = PCA(dataMat, True)
+    lowDMat, reconMat = PCA(dataMat, 1)
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_title('PCA')
