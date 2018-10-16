@@ -1,7 +1,9 @@
 '''
-Created on Feb 4, 2011
 Tree-Based Regression Methods
 @author: Peter Harrington
+modified by Gavin
+
+Machine Learning In Action Chapter9
 '''
 from numpy import *
 
@@ -94,12 +96,12 @@ def getMean(tree):
     if isTree(tree['left']): tree['left'] = getMean(tree['left'])
     return (tree['left']+tree['right'])/2.0
     
-def prune(tree, testData):
+def regTreePrune(tree, testData):
     if shape(testData)[0] == 0: return getMean(tree) #if we have no test data collapse the tree
     if (isTree(tree['right']) or isTree(tree['left'])):#if the branches are not trees try to prune them
         lSet, rSet = binSplitDataSet(testData, tree['spInd'], tree['spVal'])
-    if isTree(tree['left']): tree['left'] = prune(tree['left'], lSet)
-    if isTree(tree['right']): tree['right'] =  prune(tree['right'], rSet)
+    if isTree(tree['left']): tree['left'] = regTreePrune(tree['left'], lSet)
+    if isTree(tree['right']): tree['right'] = regTreePrune(tree['right'], rSet)
     #if they are now both leafs, see if we can merge them
     if not isTree(tree['left']) and not isTree(tree['right']):
         lSet, rSet = binSplitDataSet(testData, tree['spInd'], tree['spVal'])
@@ -117,7 +119,7 @@ def regTreeEval(model, inDat):
     return float(model)
 
 def modelTreeEval(model, inDat):
-    n = shape(inDat)[1]
+    n = shape(inDat)[0]
     X = mat(ones((1,n+1)))
     X[:,1:n+1]=inDat
     return float(X*model)
@@ -135,10 +137,19 @@ def createForeCast(tree, testData, modelEval=regTreeEval):
     m=len(testData)
     yHat = mat(zeros((m,1)))
     for i in range(m):
-        yHat[i,0] = treeForeCast(tree, mat(testData[i]), modelEval)
+        yHat[i,0] = treeForeCast(tree, testData[i].A.flatten(), modelEval)
     return yHat
 
 if __name__ == '__main__':
-    dataSet = loadDataSet('ex00.txt')
-    dataSet = mat(dataSet)
-    print(createTree(dataSet))
+    # reg tree
+    trainMat = mat(loadDataSet('bikeSpeedVsIq_train.txt'))
+    testMat = mat(loadDataSet('bikeSpeedVsIq_test.txt'))
+    tree = createTree(trainMat, regLeaf, regErr, ops =(1, 20))
+    tree = regTreePrune(tree, testData=testMat)
+    yHat = createForeCast(tree, testMat[:,0:-1], modelEval=regTreeEval)
+    print(corrcoef(yHat, testMat[:,-1], rowvar=0)[0, 1])
+
+    #model tree
+    tree = createTree(trainMat, modelLeaf, modelErr, ops=(1, 20))
+    yHat = createForeCast(tree, testMat[:, 0:-1], modelEval=modelTreeEval)
+    print(corrcoef(yHat, testMat[:, -1], rowvar=0)[0, 1])
