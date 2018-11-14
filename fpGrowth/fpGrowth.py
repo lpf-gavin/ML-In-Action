@@ -9,6 +9,7 @@ This finds frequent itemsets similar to apriori but does not
 find association rules.  
 
 @author: Peter
+
 modified by Gavin
 
 Machine Learning In Action chapter 12
