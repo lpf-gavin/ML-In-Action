@@ -1,5 +1,5 @@
 import numpy as np
-from  .decision_tree_model import ClassificationTree
+from .decision_tree_model import ClassificationTree
 
 class RandomForest():
     """
@@ -41,9 +41,10 @@ class RandomForest():
         sub_sets = self.get_bootstrap_data(X, Y)
         n_features = X.shape[1]
         if self.max_features == None:
+            print('max_features not set, use sqrt(feature number of data) by default)')
             self.max_features = int(np.sqrt(n_features))
         for i in range(self.n_estimators):
-            # get random feature
+            # get random features by Sampling with replacement
             sub_X, sub_Y = sub_sets[i]
             idx = np.random.choice(n_features, self.max_features, replace=True)
             sub_X = sub_X[:, idx]
@@ -58,7 +59,9 @@ class RandomForest():
             sub_X = X[:, idx]
             y_pre = self.trees[i].predict(sub_X)
             y_preds.append(y_pre)
+
         y_preds = np.array(y_preds).T
+
         y_pred = []
         for y_p in y_preds:
             # np.bincount()可以统计每个索引出现的次数
@@ -68,14 +71,12 @@ class RandomForest():
         return y_pred
 
     def get_bootstrap_data(self, X, Y):
-
-        # 通过bootstrap的方式获得n_estimators组数据
         # get int(n_estimators) datas by bootstrap
 
         m = X.shape[0]
         Y = Y.reshape(m, 1)
 
-        # 合并X和Y，方便bootstrap (conbine X and Y)
+        # combine X and Y for bootstrap easily
         X_Y = np.hstack((X, Y))
         np.random.shuffle(X_Y)
 

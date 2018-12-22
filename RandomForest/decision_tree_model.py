@@ -57,10 +57,10 @@ class DecisionTree(object):
         # The maximum depth to grow the tree to
         self.max_depth = max_depth
         # Function to calculate impurity (classif.=>info gain, regr=>variance reduct.)
-        # 切割树的方法，gini，方差等
+        # gini, variance ...
         self._impurity_calculation = None
         # Function to determine prediction of y at leaf
-        # 树节点取值的方法，分类树：选取出现最多次数的值，回归树：取所有值的平均值
+        # classification tree: max frequency the value occurred; regression tree: average value
         self._leaf_value_calculation = None
         # If y is one-hot encoded (multi-dim) or not (one-dim)
         self.one_dim = None
@@ -114,7 +114,7 @@ class DecisionTree(object):
                         # If this threshold resulted in a higher information gain than previously
                         # recorded save the threshold value and the feature
                         # index
-                        if impurity > largest_impurity:
+                        if impurity > largest_impurity and impurity > self.min_impurity:
                             largest_impurity = impurity
                             best_criteria = {"feature_i": feature_i, "threshold": threshold}
                             best_sets = {
@@ -162,10 +162,8 @@ class DecisionTree(object):
 
     def predict(self, X):
         """ Classify samples one by one and return the set of labels """
-        y_pred = []
-        for x in X:
-            y_pred.append(self.predict_value(x))
-        return y_pred
+        return [self.predict_value(x) for x in X]
+
 
     def print_tree(self, tree=None, indent=" "):
         """ Recursively print the decision tree """
@@ -213,7 +211,7 @@ class ClassificationTree(DecisionTree):
     def fit(self, X, y):
         self._impurity_calculation = self._calculate_information_gain
         self._leaf_value_calculation = self._majority_vote
-        super(ClassificationTree, self).fit(X, y)
+        super().fit(X, y)
 
 
 class RegressionTree(DecisionTree):
@@ -282,4 +280,4 @@ class XGBoostRegressionTree(DecisionTree):
     def fit(self, X, y):
         self._impurity_calculation = self._gain_by_taylor
         self._leaf_value_calculation = self._approximate_update
-        super(XGBoostRegressionTree, self).fit(X, y)
+        super().fit(X, y)

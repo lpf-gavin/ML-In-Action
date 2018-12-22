@@ -9,11 +9,11 @@ def main():
     X = data.data
     y = data.target
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, seed=2)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, testdata_ratio=0.4, seed=2)
     print("X_train.shape:", X_train.shape)
     print("Y_train.shape:", y_train.shape)
 
-    clf = RandomForest(n_estimators=100)
+    clf = RandomForest(n_estimators=20)
     clf.fit(X_train, y_train)
     y_pred = clf.predict(X_test)
 
