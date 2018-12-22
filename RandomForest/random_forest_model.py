@@ -1,27 +1,22 @@
 import numpy as np
 from  .decision_tree_model import ClassificationTree
 
-
 class RandomForest():
-    """Random Forest classifier. Uses a collection of classification trees that
+    """
+    Random Forest classifier. Uses a collection of classification trees that
     trains on random subsets of the data using a random subsets of the features.
     Parameters:
     -----------
     n_estimators: int
-        树的数量
         The number of classification trees that are used.
     max_features: int
-        每棵树选用数据集中的最大的特征数
         The maximum number of features that the classification trees are allowed to
         use.
     min_samples_split: int
-        每棵树中最小的分割数，比如 min_samples_split = 2表示树切到还剩下两个数据集时就停止
         The minimum number of samples needed to make a split when building a tree.
     min_gain: float
-        每棵树切到小于min_gain后停止
         The minimum impurity required to split the tree further.
     max_depth: int
-        每棵树的最大层数
         The maximum depth of a tree.
     """
 
@@ -35,21 +30,19 @@ class RandomForest():
         self.max_features = max_features
 
         self.trees = []
-        # 建立森林(bulid forest)
+        # bulid forest
         for _ in range(self.n_estimators):
             tree = ClassificationTree(min_samples_split=self.min_samples_split, min_impurity=self.min_gain,
                                       max_depth=self.max_depth)
             self.trees.append(tree)
 
     def fit(self, X, Y):
-        # 训练，每棵树使用随机的数据集(bootstrap)和随机的特征
         # every tree use random data set(bootstrap) and random feature
         sub_sets = self.get_bootstrap_data(X, Y)
         n_features = X.shape[1]
         if self.max_features == None:
             self.max_features = int(np.sqrt(n_features))
         for i in range(self.n_estimators):
-            # 生成随机的特征
             # get random feature
             sub_X, sub_Y = sub_sets[i]
             idx = np.random.choice(n_features, self.max_features, replace=True)
