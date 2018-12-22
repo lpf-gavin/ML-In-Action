@@ -1,6 +1,5 @@
 #ref: https://github.com/RRdmlearning/Machine-Learning-From-Scratch/tree/master/random_forest
 
-import numpy as np
 from sklearn import datasets
 from utils import train_test_split, accuracy_score, Plot
 from RandomForest.random_forest_model import RandomForest
